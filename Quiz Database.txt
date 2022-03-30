@@ -1,0 +1,167 @@
+import sqlite3
+import time
+
+
+
+with sqlite3.connect("Quiz.db") as db:
+  cursor = db.cursor()
+
+
+
+
+
+def login():
+  global cursor
+  
+  table = cursor.execute(""" CREATE TABLE IF NOT EXISTS user(
+               UserID          INTEGER, 
+               Username        VARCHAR(20) NOT NULL,  
+               Password        VARCHAR(20) NOT NULL, 
+               PRIMARY KEY("UserID" AUTOINCREMENT)
+              ) ;""")
+              
+  Username = 'a'
+  Password = 'b'
+
+
+  cursor.execute(" INSERT into user('Username','Password') VALUES('{}','{}') ; " .format(Username,Password))
+  
+  choice = input("Do you have an existing username and password?: ").title()
+  total = 0
+  if choice == "Yes" or choice == "Y":
+    Username = input("enter your Username: ")
+    Password = input("enter your Password: ")
+    while total < 5:
+      FindUser = ('SELECT * FROM user WHERE Username = ? AND Password = ?')
+      cursor.execute(FindUser, [(Username),(Password)])
+      results = cursor.fetchall()
+      if results:
+        for i in results:
+          print("Welcome " + i[1])
+          total += 6
+          mainmenu()
+      else:
+        print("your username or password is incorrect")
+        Username = input("enter your Username: ")
+        Password = input("enter your Password: ")
+        total += 1
+        if total == 5:
+          print("too many invalid attempts")
+          quit()
+        
+      
+  if choice == "No" or choice == "N":    
+        Username = input("enter a Username: ")
+        find_user = ('SELECT * FROM user WHERE Username = ?')
+        cursor.execute(find_user,[(Username)])
+        while cursor.fetchall():
+          print("username already in use")   
+        else:
+          Password = input("enter a Password: ")
+          cursor.execute(" INSERT into user('Username','Password') VALUES('{}','{}') ; " .format(Username,Password))
+        db.commit()
+    
+  else:
+    print("invalid")
+    quit()
+      
+      
+      
+      
+
+
+
+def mainmenu():
+  print("")
+  print("")
+  print("welcome to the mainmenu, what would you like to do?")
+  print("1 - Name as many Pokemon as you can quiz")
+  print("2 - WHO'S THAT POKEMON?")
+  print("3 - Credits")
+  choice2 = int(input(""))
+  if choice2 == 1:
+    NamePokemon()
+  if choice2 == 3:
+    credits()
+
+
+
+
+
+
+
+def credits():    
+    for x in range(100):
+      time.sleep(0.1)
+      print("art created by me")
+      time.sleep(0.1)
+      print("music created by me")
+      time.sleep(0.1)
+      print("programming created by me")
+      time.sleep(0.1)
+      print("gameplay created by me")
+      time.sleep(0.1)
+      print("EVERYTHING CREATED BY ME!!!!!!")
+      time.sleep(0.1)
+      print("Special thanks to me + Oli")
+    mainmenu()
+    
+    
+
+def timer():
+  global time
+  x = time.time()
+  while True:
+    time.sleep(1)
+    y = time.time()
+    RandomVariableName = round(1000 - round((y - x)))
+    print(RandomVariableName)
+
+
+
+
+
+
+def NamePokemon():
+  print("are you ready?")
+  time.sleep(3)
+  print("3")
+  time.sleep(1)
+  print("2")
+  time.sleep(1)
+  print("1")
+  time.sleep(1)
+  print("GO!!!")
+  #timer()
+  
+  pokelist = [
+"Bulbasaur","Ivysaur", "Venusaur","Charmander","Charmeleon","Charizard","Squirtle","Wartortle","Blastoise","Caterpie","Metapod","Butterfree","Weedle","Kakuna","Beedrill","Pidgey","Pidgeotto","Pidgeot","Rattata","Raticate","Spearow","Fearow","Ekans","Arbok","Pikachu","Raichu","Sandshrew","Sandslash","Nidoran","Nidorina","Nidoqueen","Nidoran","Nidorino","Nidoking","Clefairy","Clefable","Vulpix","Ninetales","Jigglypuff","Wigglytuff","Zubat","Golbat","Oddish","Gloom","Vileplume","Paras","Parasect","Venonat","Venomoth","Diglett","Dugtrio","Meowth","Persian","Psyduck","Golduck","Mankey","Primeape","Growlithe","Arcanine","Poliwag","Poliwhirl","Poliwrath","Abra","Kadabra","Alakazam","Machop","Machoke","Machamp","Bellsprout","Weepinbell","Victreebel","Tentacool","Tentacruel","Geodude","Graveler","Golem","Ponyta","Rapidash","Slowpoke","Slowbro","Magnemite","Magneton","Farfetchd","Doduo","Dodrio","Seel","Dewgong","Grimer","Muk","Shellder","Cloyster","Gastly","Haunter","Gengar","Onix","Drowzee","Hypno","Krabby","Kingler","Voltorb","Electrode","Exeggcute","Exeggutor","Cubone","Marowak","Hitmonlee","Hitmonchan","Lickitung","Koffing","Weezing","Rhyhorn","Rhydon","Chansey","Tangela","Kangaskhan","Horsea","Seadra","Goldeen","Seaking","Staryu","Starmie","Mr Mime" ,"Scyther", "Jynx" ,"Electabuzz", "Magmar", "Pinsir" ,"Tauros", "Magikarp" ,"Gyarados" ,"Lapras" ,"Ditto","Eevee" ,"Vaporeon", "Jolteon", "Flareon", "Porygon" ,"Omanyte", "Omastar" ,"Kabuto", "Kabutops", "Aerodactyl" ,"Snorlax", "Articuno", "Zapdos" ,"Moltres", "Dratini", "Dragonair", "Dragonite" ,"Mewtwo" ,"Mew"]
+
+  
+  namedpokelist = []
+  userpoke = input("enter that pokemon: ")
+  if userpoke in pokelist:
+    pokelist.remove(userpoke)
+    namedpokelist.append(userpoke)
+  while len(namedpokelist) < 151 and userpoke in pokelist:
+    userpoke = input("enter that pokemon")
+  while userpoke not in pokelist and userpoke != "viewnamed":
+    print("Not a Gen1 Pokemon Try Again!")
+    userpoke = input("enter that pokemon")
+    
+  if userpoke == "viewnamed":
+    print(namedpokelist)
+    
+    
+  
+  
+  
+
+
+
+
+  
+  
+   
+
+  
